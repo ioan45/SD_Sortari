@@ -1,0 +1,9 @@
+# depslib dependency file v1.0
+1615672055 source:c:\users\alexandru\documents\c++ projects\code blocks\facultate\sd\sortari_v1\main.cpp
+	<iostream>
+	<iomanip>
+	<cstdlib>
+	<chrono>
+	<algorithm>
+	<cstring>
+
