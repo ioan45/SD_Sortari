@@ -61,7 +61,7 @@ void Merge(int* arr, unsigned st, unsigned dr)
         }
         while(i <= mij)
             Aux[k++] = arr[i++];
-        while(j <= mij)
+        while(j <= dr)
             Aux[k++] = arr[j++];
 
         for(i = 0; i < k; i++)
