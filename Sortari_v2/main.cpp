@@ -6,13 +6,6 @@
 #include <algorithm>
 #include <string>
 
-#define SWAP(a, b)\
-{\
-    int aux = a;\
-    a = b;\
-    b = aux;\
-}
-
 using namespace std;
 
 struct Sortare
@@ -31,24 +24,23 @@ void Bubble(int* arr, unsigned N)
         for(unsigned i = 0; i < N - 1 - cnt_itr; i++)
             if(arr[i] > arr[i + 1])
             {
-                SWAP(arr[i], arr[i + 1])
+                swap(arr[i], arr[i + 1]);
                 sw = true;
             }
         cnt_itr++;
     }
 }
 
-void Merge(int* arr, unsigned st, unsigned dr)
+void Merge(int* arr, unsigned st, unsigned dr, int* Aux)
 {
     if(st < dr)
     {
         unsigned mij = (st + dr) / 2;
 
-        Merge(arr, st, mij);
-        Merge(arr, mij + 1, dr);
+        Merge(arr, st, mij, Aux);
+        Merge(arr, mij + 1, dr, Aux);
 
-        unsigned i = st, j = mij + 1, k = 0;
-        int* Aux = new int[dr - st + 1];
+        unsigned i = st, j = mij + 1, k = st;
 
         while(i <= mij && j <= dr)
         {
@@ -62,16 +54,16 @@ void Merge(int* arr, unsigned st, unsigned dr)
         while(j <= dr)
             Aux[k++] = arr[j++];
 
-        for(i = 0; i < k; i++)
-            arr[i + st] = Aux[i];
-
-        delete[] Aux;
+        for(i = st; i < k; i++)
+            arr[i] = Aux[i];
     }
 }
 
 void Merge(int* arr, unsigned N)
 {
-    Merge(arr, 0, N - 1);
+    int* Aux = new int[N];
+    Merge(arr, 0, N - 1, Aux);
+    delete[] Aux;
 }
 
 void Counting(int* arr, unsigned N)
@@ -112,10 +104,10 @@ void Quick_v1(int* arr, int st, int dr, unsigned adancime, bool& Limitat)
         for(int j = st; j < dr; j++)
             if(arr[j] < pivot)
             {
-                SWAP(arr[i], arr[j])
+                swap(arr[i], arr[j]);
                 i++;
             }
-        SWAP(arr[i], arr[dr])
+        swap(arr[i], arr[dr]);
 
         if(adancime < 15000)
         {
@@ -136,19 +128,19 @@ void Quick_v1(int* arr, unsigned N)
         cout << "(i) Recursivitate: Adancimea limita atinsa!" << '\n' << setw(23) << ' ';
 }
 
-void Quick_v2(int* arr, int st, int dr, unsigned adancime, bool& Limitat)
+void Quick_v2(int* arr, int st, int dr)
 {
     ///Quick cu pivot ales ca fiind mediana din 3
 
-    if(st < dr)
+    while(st < dr)
     {
         unsigned mij = (st + dr) / 2;
         if(arr[mij] < arr[st])
-            SWAP(arr[mij], arr[st])
+            swap(arr[mij], arr[st]);
         if(arr[dr] > arr[mij])
-            SWAP(arr[dr], arr[mij])
+            swap(arr[dr], arr[mij]);
         if(arr[dr] < arr[st])
-            SWAP(arr[dr], arr[st])
+            swap(arr[dr], arr[st]);
 
         int pivot = arr[dr];
 
@@ -156,28 +148,27 @@ void Quick_v2(int* arr, int st, int dr, unsigned adancime, bool& Limitat)
         for(int j = st; j < dr; j++)
             if(arr[j] < pivot)
             {
-                SWAP(arr[i], arr[j])
+                swap(arr[i], arr[j]);
                 i++;
             }
-        SWAP(arr[i], arr[dr])
+        swap(arr[i], arr[dr]);
 
-        if(adancime < 15000)
+        if(i - st < dr - i) //Se alege partea de dimensiune mai mica pentru apelul recursiv
         {
-            Quick_v2(arr, st, i - 1, adancime + 1, Limitat);
-            Quick_v2(arr, i + 1, dr, adancime + 1, Limitat);
+            Quick_v2(arr, st, i - 1);
+            st = i + 1;
         }
         else
-            Limitat = true;
+        {
+            Quick_v2(arr, i + 1, dr);
+            dr = i - 1;
+        }
     }
 }
 
 void Quick_v2(int* arr, unsigned N)
 {
-    bool Limitat;
-    Quick_v2(arr, 0, N - 1, 1, Limitat);
-
-    if(Limitat)
-        cout << "(i) Recursivitate: Adancimea limita atinsa!" << '\n' << setw(23) << ' ';
+    Quick_v2(arr, 0, N - 1);
 }
 
 void Radix(int* arr, unsigned N, unsigned Baza, unsigned log2_Baza)
@@ -261,7 +252,7 @@ void Heapify(int* arr, unsigned N, unsigned idx_parinte)
 
         if(arr[idx_parinte] < arr[Max_idx])
         {
-            SWAP(arr[idx_parinte], arr[Max_idx])
+            swap(arr[idx_parinte], arr[Max_idx]);
             Heapify(arr, N, Max_idx);
         }
     }
@@ -274,7 +265,7 @@ void Heap(int* arr, unsigned N)
 
     for(unsigned i = N - 1; i > 0; i--)
     {
-        SWAP(arr[0], arr[i])
+        swap(arr[0], arr[i]);
         Heapify(arr, i, 0);
     }
 }
@@ -293,11 +284,11 @@ void Intro(int* arr, unsigned N, int st, int dr, unsigned adancime)
 
         unsigned mij = (st + dr) / 2;
         if(arr[st] > arr[mij])
-            SWAP(arr[st], arr[mij])
+            swap(arr[st], arr[mij]);
         if(arr[dr] > arr[mij])
-            SWAP(arr[dr], arr[mij])
+            swap(arr[dr], arr[mij]);
         if(arr[dr] < arr[st])
-            SWAP(arr[dr], arr[st])
+            swap(arr[dr], arr[st]);
 
         // Partitionare
 
@@ -314,9 +305,9 @@ void Intro(int* arr, unsigned N, int st, int dr, unsigned adancime)
 
             if(lt > rt)
                 break;
-            SWAP(arr[lt], arr[rt])
+            swap(arr[lt], arr[rt]);
         }
-        SWAP(arr[lt], arr[dr])
+        swap(arr[lt], arr[dr]);
 
         Intro(arr, N, st, lt - 1, adancime - 1);
         Intro(arr, N, lt + 1, dr, adancime - 1);
