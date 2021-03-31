@@ -92,11 +92,11 @@ void Counting(int* arr, unsigned N)
     delete[] Cnt;
 }
 
-void Quick_v1(int* arr, int st, int dr, unsigned adancime, bool& Limitat)
+void Quick_v1(int* arr, int st, int dr)
 {
     ///Quick cu pivot ales ca fiind elementul de la capatul din dreapta
 
-    if(st < dr)
+    while(st < dr)
     {
         int pivot = arr[dr];
 
@@ -109,23 +109,22 @@ void Quick_v1(int* arr, int st, int dr, unsigned adancime, bool& Limitat)
             }
         swap(arr[i], arr[dr]);
 
-        if(adancime < 15000)
+        if(i - st < dr - i) //Se alege partea de dimensiune mai mica pentru apelul recursiv
         {
-            Quick_v1(arr, st, i - 1, adancime + 1, Limitat);
-            Quick_v1(arr, i + 1, dr, adancime + 1, Limitat);
+            Quick_v1(arr, st, i - 1);
+            st = i + 1;
         }
         else
-            Limitat = true;
+        {
+            Quick_v1(arr, i + 1, dr);
+            dr = i - 1;
+        }
     }
 }
 
 void Quick_v1(int* arr, unsigned N)
 {
-    bool Limitat;
-    Quick_v1(arr, 0, N - 1, 1, Limitat);
-
-    if(Limitat)
-        cout << "(i) Recursivitate: Adancimea limita atinsa!" << '\n' << setw(23) << ' ';
+    Quick_v1(arr, 0, N - 1);
 }
 
 void Quick_v2(int* arr, int st, int dr)
